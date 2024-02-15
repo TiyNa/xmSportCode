@@ -34,7 +34,7 @@ def main(pn, pw):
         if len(code) != 0:
             return {
                 "status": True,
-                "code": code
+                "code": code[0]
             }
         else:
             return {
