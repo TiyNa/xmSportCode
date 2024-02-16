@@ -20,25 +20,21 @@ def xmSport():
         "token": "access"
     }
     response = requests.post(url, headers=headers, data=data, allow_redirects=False)
+    body = {"status": False}
 
     try:
+        print(response.headers)
         location = response.headers["Location"]
-        code = re.compile("(?<=access=).*?(?=&)").findall(location)
-        if len(code) != 0:
-            return jsonify({
-                "status": True,
-                "code": code[0]
-            })
+        match = re.search("(?<=access=).*?(?=&)", location)
+        if match:
+            body['status'] = True
+            body['code'] = match.group()
         else:
-            return jsonify({
-                "status": False,
-                "code": "请检查手机号码和登录密码"
-            })
-    except:
-        return jsonify({
-            "status": False,
-            "code": "请求失败，请稍后重试"
-        })
+            body['code'] = "请检查手机号码和登录密码"
+    except IndexError:
+            body['code'] = "请求失败，请稍后重试"
+
+    return jsonify(body)
 
 
 if __name__ == '__main__':
